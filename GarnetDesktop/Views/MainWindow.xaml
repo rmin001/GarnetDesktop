@@ -1,0 +1,332 @@
+﻿<mah:MetroWindow
+    x:Class="GarnetDesktop.Views.MainWindow"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    xmlns:mah="clr-namespace:MahApps.Metro.Controls;assembly=MahApps.Metro"
+    xmlns:iconPacks="http://metro.mahapps.com/winfx/xaml/iconpacks"
+    xmlns:lvc="clr-namespace:LiveChartsCore.SkiaSharpView.WPF;assembly=LiveChartsCore.SkiaSharpView.WPF"
+    mc:Ignorable="d"
+    Title="Garnet Desktop"
+    Width="1200"
+    Height="800"
+    GlowBrush="{DynamicResource AccentColorBrush}"
+    WindowStartupLocation="CenterScreen"
+    >
+
+    <Grid Margin="18">
+
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="300"/>
+            <ColumnDefinition Width="16"/>
+            <ColumnDefinition Width="*"/>
+        </Grid.ColumnDefinitions>
+
+        <!-- LEFT PANEL -->
+
+        <Border Grid.Column="0"
+                CornerRadius="12"
+                BorderThickness="1"
+                BorderBrush="#303030"
+                Background="#3393DF"
+                HorizontalAlignment="Stretch"
+                VerticalAlignment="Stretch">
+
+            <DockPanel>
+
+                <!-- TOP BAR -->
+
+                <Grid DockPanel.Dock="Top"
+                      Margin="16">
+
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="*"/>
+                        <ColumnDefinition Width="Auto"/>
+                    </Grid.ColumnDefinitions>
+
+                    <TextBlock Text="Instances"
+                               Foreground="#fff"
+                               FontSize="24"
+                               FontWeight="SemiBold"/>
+
+                    <Button Grid.Column="1"
+                            Width="42"
+                            Height="42"
+                            Background="White"
+                            Command="{Binding AddCommand}"
+                            Style="{StaticResource MahApps.Styles.Button.Circle}">
+
+                        <iconPacks:PackIconMaterial Kind="Plus" Foreground="#3393DF"
+                                                    Width="20"
+                                                    Height="20"/>
+                    </Button>
+
+                </Grid>
+
+                <!-- INSTANCE LIST -->
+
+                <ListView ItemsSource="{Binding Instances}"
+                          SelectedItem="{Binding SelectedInstance}"
+                          Background="White"
+                          BorderThickness="0"
+                          ScrollViewer.VerticalScrollBarVisibility="Auto">
+
+                    <ListView.ItemContainerStyle>
+                        <Style TargetType="ListViewItem">
+
+                            <Setter Property="Foreground" Value="Gray"/>
+                            <Setter Property="HorizontalContentAlignment" Value="Stretch"/>
+                            <Setter Property="VerticalContentAlignment" Value="Stretch"/>
+
+                            <Style.Triggers>
+
+                                <Trigger Property="IsSelected" Value="True">
+                                    <Setter Property="Foreground" Value="White"/>
+                                </Trigger>
+
+                            </Style.Triggers>
+
+                        </Style>
+                    </ListView.ItemContainerStyle>
+                    <ListView.ItemTemplate>
+
+                        <DataTemplate>
+
+                            <Border Margin="10"
+                                    Padding="14"
+                                    CornerRadius="10"
+                                    BorderBrush="#fff"
+                                    BorderThickness="1"
+                                    Background="#0e0e0e"
+                                    >
+
+                                <Grid>
+
+                                    <Grid.ColumnDefinitions>
+                                        <ColumnDefinition Width="*"/>
+                                        <ColumnDefinition Width="Auto"/>
+                                    </Grid.ColumnDefinitions>
+
+                                    <!-- CONTENT -->
+
+                                    <StackPanel>
+
+                                        <TextBlock Text="{Binding Name}"
+                                                   FontSize="18"
+                                                   FontWeight="SemiBold" Margin="0,0,0,5" />
+
+                                        <TextBlock Text="{Binding Network.BindAddress, StringFormat=Bind: {0}}"/>
+                                        <TextBlock Text="{Binding Network.Port,StringFormat=Port: {0}}"/>
+
+                                        <!-- STATUS -->
+
+                                        <StackPanel Orientation="Horizontal"
+                                                    Margin="0,10,0,0">
+
+                                            <Ellipse Width="12"
+                                                     Height="12"
+                                                     Fill="{Binding Status, Converter={StaticResource StatusToBrushConverter}}"/>
+
+                                            <TextBlock Margin="8,0,0,0"
+                                                       VerticalAlignment="Center"
+                                                       Foreground="{Binding Status, Converter={StaticResource StatusToBrushConverter}}"
+                                                       Text="{Binding Status}"/>
+
+                                        </StackPanel>
+
+                                    </StackPanel>
+
+                                    <!-- ACTIONS -->
+
+                                    <StackPanel Grid.Column="1">
+
+                                        <!-- EDIT -->
+
+                                        <Button Width="36"
+                                                Height="36"
+                                                Margin="0,0,0,8"
+                                                Command="{Binding DataContext.EditCommand, RelativeSource={RelativeSource AncestorType=ListView}}"
+                                                CommandParameter="{Binding}"
+                                                ToolTip="Edit">
+
+                                            <iconPacks:PackIconMaterial Kind="Pencil"/>
+
+                                        </Button>
+
+                                        <!-- DETAILS -->
+
+                                        <Button Width="36"
+                                                Height="36"
+                                                Command="{Binding DataContext.ShowDetailsCommand, RelativeSource={RelativeSource AncestorType=ListView}}"
+                                                CommandParameter="{Binding}"
+                                                ToolTip="Details">
+
+                                            <iconPacks:PackIconMaterial Kind="InformationOutline"/>
+
+                                        </Button>
+
+                                    </StackPanel>
+
+                                </Grid>
+
+                                <Border.InputBindings>
+
+                                    <MouseBinding Gesture="LeftDoubleClick"
+                                                  Command="{Binding DataContext.ShowDetailsCommand, RelativeSource={RelativeSource AncestorType=ListView}}"
+                                                  CommandParameter="{Binding}"/>
+
+                                </Border.InputBindings>
+
+                            </Border>
+
+                        </DataTemplate>
+
+                    </ListView.ItemTemplate>
+
+                </ListView>
+
+            </DockPanel>
+
+        </Border>
+
+        <!-- RIGHT PANEL -->
+
+        <Grid Grid.Column="2">
+
+            <Grid.RowDefinitions>
+                <RowDefinition Height="Auto"/>
+                <RowDefinition Height="120"/>
+                <RowDefinition Height="*"/>
+            </Grid.RowDefinitions>
+
+            <!-- HEADER -->
+
+            <Grid>
+
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="*"/>
+                    <ColumnDefinition Width="Auto"/>
+                </Grid.ColumnDefinitions>
+
+                <StackPanel>
+
+                    <TextBlock Text="{Binding SelectedInstance.Name}"
+                               FontSize="32"
+                               FontWeight="Bold"/>
+
+                    <TextBlock Margin="0,6,0,0"
+                               Foreground="#AAAAAA"
+                               Text="{Binding SelectedInstance.Description}"/>
+
+                </StackPanel>
+
+                <StackPanel Grid.Column="1"
+                            Orientation="Horizontal">
+
+                    <Button Content="{Binding ToggleServiceText}"
+                            Width="120"
+                            Height="42"
+                            Margin="0,0,10,0"
+                            Command="{Binding ToggleServiceCommand}"
+                            Visibility="{Binding SelectedInstance, Converter={StaticResource NullToVisibilityConverter}}"/>
+
+                    <Button Content="Delete"
+                            Width="120"
+                            Height="42"
+                            Command="{Binding DeleteCommand}"
+                            Visibility="{Binding CanDelete, Converter={StaticResource BooleanToVisibilityConverter}}"/>
+
+                </StackPanel>
+
+            </Grid>
+
+            <!-- METRICS -->
+
+            <UniformGrid Grid.Row="1"
+                         Columns="3"
+                         Margin="0,20,0,20">
+
+                <!-- CPU -->
+                <Border Margin="5"
+         Padding="5"
+         BorderBrush="#333"
+         BorderThickness="1"
+         CornerRadius="8">
+
+                    <StackPanel>
+                        <TextBlock Text="CPU %"  />
+                        <TextBlock Text="{Binding SelectedInstance.Metrics.CpuPercent, StringFormat={}{0:F1}%}"
+                                   FontSize="30"
+                                   HorizontalAlignment="Center"
+                                   FontWeight="Bold"/>
+                    </StackPanel>
+
+                </Border>
+
+                <!-- MEMORY -->
+                <Border Margin="5"
+                        Padding="5"
+                        BorderBrush="#333"
+                        BorderThickness="1"
+                        CornerRadius="8">
+
+                    <StackPanel>
+                        <TextBlock Text="Memory" />
+                        <TextBlock Text="{Binding SelectedInstance.Metrics.MemoryMB, StringFormat={}{0:F0} MB}"
+                                   FontSize="30"
+                                   HorizontalAlignment="Center"
+                                   FontWeight="Bold"/>
+                    </StackPanel>
+                </Border>
+
+                <!-- CONNECTIONS -->
+                <Border Margin="5"
+                 Padding="5"
+                 BorderBrush="#333"
+                 BorderThickness="1"
+                 CornerRadius="8">
+
+                    <StackPanel>
+                        <TextBlock Text="Connections"   />
+                        <TextBlock Text="{Binding SelectedInstance.Metrics.Connections}"
+                                   FontSize="30"
+                                   HorizontalAlignment="Center"
+                                   FontWeight="Bold"/>
+                    </StackPanel>
+                </Border>
+            </UniformGrid>
+
+            <!-- CHARTS -->
+            <Grid Grid.Row="2">
+
+                <Grid.RowDefinitions>
+
+                    <RowDefinition Height="*"/>
+
+                    <RowDefinition Height="*"/>
+
+                </Grid.RowDefinitions>
+
+                <!-- CPU CHART -->
+                <GroupBox Header="CPU Usage">
+
+                    <lvc:CartesianChart Series="{Binding CpuSeries}"/>
+
+                </GroupBox>
+
+                <!-- MEMORY CHART -->
+                <GroupBox Grid.Row="1"
+                          Header="Memory Usage"
+                          Margin="0,10,0,0">
+
+                    <lvc:CartesianChart Series="{Binding MemorySeries}"/>
+
+                </GroupBox>
+
+            </Grid>
+        </Grid>
+
+    </Grid>
+
+</mah:MetroWindow>

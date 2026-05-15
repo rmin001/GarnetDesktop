@@ -1,0 +1,297 @@
+﻿<mah:MetroWindow
+    x:Class="GarnetDesktop.Views.Dialogs.InstanceDetailsDialog"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:mah="http://metro.mahapps.com/winfx/xaml/controls"
+    Title="Instance Details"
+    Width="600"
+    Height="700"
+    IsMinButtonEnabled="False"
+    WindowStartupLocation="CenterScreen">
+
+    <Grid Margin="24">
+        <Grid.RowDefinitions>
+            <RowDefinition Height="*"/>
+            <RowDefinition Height="Auto"/>
+        </Grid.RowDefinitions>
+        <StackPanel>
+
+            <!-- TITLE -->
+
+            <TextBlock Text="{Binding Instance.Name}"
+                   FontSize="28"
+                   FontWeight="Bold"/>
+
+            <TextBlock Margin="0,6,0,20"
+                   Foreground="#AAAAAA"
+                   Text="{Binding Instance.Description}"/>
+
+            <!-- GENERAL -->
+
+            <mah:MetroHeader Margin="0,0,0,12" Background="Black" Foreground="White">
+                <mah:MetroHeader.Header>
+                    <TextBlock Text="General"
+                           FontSize="18"
+                           FontWeight="SemiBold"/>
+                </mah:MetroHeader.Header>
+            </mah:MetroHeader>
+
+            <Grid Margin="0,0,0,24">
+
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="180"/>
+                    <ColumnDefinition Width="*"/>
+                </Grid.ColumnDefinitions>
+
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="Auto"/>
+                    <RowDefinition Height="Auto"/>
+                    <RowDefinition Height="Auto"/>
+                    <RowDefinition Height="Auto"/>
+                    <RowDefinition Height="Auto"/>
+                </Grid.RowDefinitions>
+                
+                <!-- PROCESS -->
+                <TextBlock Grid.Row="0"
+                   Grid.Column="0"
+                   Margin="0,0,0,10"
+                   FontWeight="SemiBold"
+                   Text="Process Id"
+                    Visibility="{Binding Instance.IsRunning, Converter={StaticResource BooleanToVisibilityConverter}}"/>
+                <TextBlock Grid.Row="0"
+                   Grid.Column="1"
+                   Margin="8,0,0,10"
+                   Text="{Binding Instance.ProcessId}"
+                   Visibility="{Binding Instance.IsRunning, Converter={StaticResource BooleanToVisibilityConverter}}"/>
+
+                <!-- STATUS -->
+
+                <TextBlock Grid.Row="1"
+                       Grid.Column="0"
+                       Margin="0,0,0,10"
+                       FontWeight="SemiBold"
+                       Text="Status"/>
+
+                <TextBlock Grid.Row="1"
+                       Grid.Column="1"
+                       Margin="8,0,0,10"
+                       Foreground="{Binding Instance.Status, Converter={StaticResource StatusToBrushConverter}}"
+                       Text="{Binding Instance.Status}"/>
+
+                
+                <!-- Auth -->
+                <TextBlock Grid.Row="3"
+                    Grid.Column="0"
+                       Margin="0,0,0,10"
+                    FontWeight="SemiBold"
+                    Text="Authentication"/>
+
+                            <TextBlock Grid.Row="3"
+                    Grid.Column="1"  Margin="8,0,0,10"
+
+                    Text="{Binding Instance.Auth.Mode}"/>
+                
+                <!-- MEMORY -->
+                <TextBlock Grid.Row="4"
+                       Grid.Column="0"
+                       FontWeight="SemiBold"
+                       Text="Memory Limit"/>
+
+                <TextBlock Grid.Row="4"
+                       Grid.Column="1"
+                       Margin="8,0,0,0"
+                       Text="{Binding Instance.MemoryLimitMb,
+                                      StringFormat={}{0} MB}"/>
+
+            </Grid>
+
+            <!-- NETWORK -->
+
+            <mah:MetroHeader Margin="0,0,0,12" Background="Black" Foreground="White">
+                <mah:MetroHeader.Header>
+                    <TextBlock Text="Network"
+                           FontSize="18"
+                           FontWeight="SemiBold"/>
+                </mah:MetroHeader.Header>
+            </mah:MetroHeader>
+            <Grid>
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="180"/>
+                    <ColumnDefinition Width="*"/>
+                </Grid.ColumnDefinitions>
+
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="Auto"/>
+                    <RowDefinition Height="Auto"/>
+                </Grid.RowDefinitions>
+                <!-- PORT -->
+                <TextBlock Grid.Row="0"
+                    Grid.Column="0"
+                    Margin="0,0,0,10"
+                    FontWeight="SemiBold"
+                    Text="BindAddress"/>
+
+                <TextBlock Grid.Row="0"
+                    Grid.Column="1"
+                    Margin="8,0,0,10"
+                    Text="{Binding Instance.Network.BindAddressDisplay}"/>    
+
+                <!-- PORT -->
+                <TextBlock Grid.Row="1"
+                     Grid.Column="0"
+                     Margin="0,0,0,10"
+                     FontWeight="SemiBold"
+                     Text="Port"/>
+
+                <TextBlock Grid.Row="1"
+                     Grid.Column="1"
+                     Margin="8,0,0,10"
+                     Text="{Binding Instance.Network.Port}"/>
+
+            </Grid>
+
+            <!-- STORAGE -->
+
+            <mah:MetroHeader Margin="0,0,0,12"
+                 Background="Black"
+                 Foreground="White"   >
+                <mah:MetroHeader.Visibility>
+                    <MultiBinding Converter="{StaticResource MultiBoolOrToVisibilityConverter}">
+
+                        <Binding Path="Instance.CheckpointDirectory.Enabled"/>
+                        <Binding Path="Instance.LogDirectory.Enabled"/>
+                    </MultiBinding>
+                </mah:MetroHeader.Visibility>
+                <mah:MetroHeader.Header>
+                    <TextBlock Text="Storage"
+                   FontSize="18"
+                   FontWeight="SemiBold"  />
+                </mah:MetroHeader.Header>
+
+            </mah:MetroHeader>
+
+            <StackPanel Margin="0,0,0,24">
+
+
+                <!-- CHECKPOINT DIRECTORY -->
+
+                <Grid Visibility="{Binding Instance.CheckpointDirectory.Enabled,
+                               Converter={StaticResource BoolToVisibilityConverter}}">
+
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="180"/>
+                        <ColumnDefinition Width="*"/>
+                    </Grid.ColumnDefinitions>
+
+                    <TextBlock Grid.Column="0"
+                   Margin="0,0,0,10"
+                   FontWeight="SemiBold"
+                   Text="Checkpoint Directory"/>
+
+                    <TextBlock Grid.Column="1"
+                   Margin="8,0,0,10"
+                   Text="{Binding Instance.CheckpointDirectory.Path}"
+                   TextWrapping="Wrap"/>
+
+                </Grid>
+
+                <!-- LOG DIRECTORY -->
+
+                <Grid Visibility="{Binding Instance.LogDirectory.Enabled,
+                               Converter={StaticResource BoolToVisibilityConverter}}">
+
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="180"/>
+                        <ColumnDefinition Width="*"/>
+                    </Grid.ColumnDefinitions>
+
+                    <TextBlock Grid.Column="0"
+                   Margin="0,0,0,10"
+                   FontWeight="SemiBold"
+                   Text="Log Directory"/>
+
+                    <TextBlock Grid.Column="1"
+                   Margin="8,0,0,10"
+                   Text="{Binding Instance.LogDirectory.Path}"
+                   TextWrapping="Wrap"/>
+
+                </Grid>
+
+            </StackPanel>
+            
+            <!-- RESOURCE USAGE -->
+
+            <mah:MetroHeader Margin="0,0,0,12" Background="Black" Foreground="White">
+                <mah:MetroHeader.Header>
+                    <TextBlock Text="Resource Usage"
+                           FontSize="18"
+                           FontWeight="SemiBold"/>
+                </mah:MetroHeader.Header>
+            </mah:MetroHeader>
+
+            <Grid>
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="180"/>
+                    <ColumnDefinition Width="*"/>
+                </Grid.ColumnDefinitions>
+
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="Auto"/>
+                    <RowDefinition Height="Auto"/>
+                    <RowDefinition Height="Auto"/>
+                </Grid.RowDefinitions>
+
+                <!-- CPU -->
+
+                <TextBlock Grid.Row="0"
+                       Grid.Column="0"
+                       Margin="0,0,0,10"
+                       FontWeight="SemiBold"
+                       Text="CPU"/>
+
+                <TextBlock Grid.Row="0"
+                       Grid.Column="1"
+                       Margin="8,0,0,10"
+                       Text="{Binding Instance.Metrics.CpuPercent,
+                                      StringFormat={}{0:F2}%}"/>
+
+                <!-- MEMORY -->
+
+                <TextBlock Grid.Row="1"
+                       Grid.Column="0"
+                       Margin="0,0,0,10"
+                       FontWeight="SemiBold"
+                       Text="Memory"/>
+
+                <TextBlock Grid.Row="1"
+                       Grid.Column="1"
+                       Margin="8,0,0,10"
+                       Text="{Binding Instance.Metrics.MemoryMB,
+                                      StringFormat={}{0} MB}"/>
+
+                <!-- CONNECTIONS -->
+
+                <TextBlock Grid.Row="2"
+                       Grid.Column="0"
+                       FontWeight="SemiBold"
+                       Text="Connections"/>
+
+                <TextBlock Grid.Row="2"
+                       Grid.Column="1"
+                       Margin="8,0,0,0"
+                       Text="{Binding Instance.Metrics.Connections}"/>
+
+            </Grid>
+
+        </StackPanel>
+
+        <Button Content="Close" Grid.Row="1" 
+                HorizontalAlignment="Right"
+                VerticalAlignment="Bottom"
+                  Width="120"
+                  IsDefault="True"
+                Margin="0,10,0,0"
+                Command="{Binding CloseCommand}" CommandParameter="{Binding RelativeSource={RelativeSource AncestorType=Window}}" /> 
+    </Grid>
+
+</mah:MetroWindow>

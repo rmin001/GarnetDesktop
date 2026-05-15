@@ -1,0 +1,5 @@
+<Solution>
+  <Project Path="GarnetDesktop.Core/GarnetDesktop.Core.csproj" />
+  <Project Path="GarnetDesktop/GarnetDesktop.csproj" />
+  <Project Path="GarnetWorker/GarnetWorker.csproj" />
+</Solution>

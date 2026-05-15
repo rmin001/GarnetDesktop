@@ -1,0 +1,215 @@
+﻿<mah:MetroWindow
+    x:Class="GarnetDesktop.Views.Dialogs.InstanceDialog"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+   xmlns:mah="clr-namespace:MahApps.Metro.Controls;assembly=MahApps.Metro"
+    Title="Add/Edit Instance"
+    Width="700"
+    Height="800"
+    IsMinButtonEnabled="False"
+    WindowStartupLocation="CenterScreen">
+
+
+    <ScrollViewer>
+
+        <Grid Margin="24">
+
+            <Grid.RowDefinitions>
+                <RowDefinition Height="*"/>
+                <RowDefinition Height="Auto"/>
+            </Grid.RowDefinitions>
+
+            <StackPanel>
+
+                <TextBlock Text="General"
+                        FontSize="24"
+                        FontWeight="SemiBold"/>
+
+                <!-- NAME -->
+                <TextBox Text="{Binding Name,
+                        UpdateSourceTrigger=PropertyChanged,
+                        ValidatesOnNotifyDataErrors=True}"  
+                         IsEnabled="{Binding Instance.CanEdit}">
+
+                    <mah:TextBoxHelper.Watermark>
+                        Name
+                    </mah:TextBoxHelper.Watermark>
+
+                </TextBox>
+
+                <!-- Description -->
+                <TextBox Text="{Binding Description}" Margin="0,5,0,0"
+             IsEnabled="{Binding Instance.CanEdit}">
+
+                    <mah:TextBoxHelper.Watermark>
+                        Description
+                    </mah:TextBoxHelper.Watermark>
+
+                </TextBox>
+              
+                <!-- MEMORY -->
+                <TextBlock Margin="0,16,0,4"
+        Text="Memory Limit"/>
+
+                <Slider Minimum="128"
+     Maximum="8192"
+     Value="{Binding MemoryLimitMb}"
+     IsEnabled="{Binding Instance.CanEdit}"/>
+
+                <TextBlock Text="{Binding MemoryLimitMb, StringFormat={}{0} MB}"/>
+
+
+                <!-- Authentication -->
+                <TextBlock Margin="0,20,0,8"
+                        FontSize="20"
+                        FontWeight="SemiBold"
+                        Text="Authentication"/>
+                
+                <!-- AUTH -->
+                <ComboBox
+                    Margin="0,0,0,0" 
+                    IsEnabled="{Binding Instance.CanEdit}"
+                    ItemsSource="{Binding Auth.Modes}"
+                    SelectedItem="{Binding Auth.Mode, Mode=TwoWay}" />
+
+                <!-- Password -->
+                <PasswordBox x:Name="PasswordBox" Margin="0,5,0,0"
+                             PasswordChanged="PasswordBox_PasswordChanged"
+                              mah:TextBoxHelper.Watermark="Enter Password"
+                          IsEnabled="{Binding Instance.CanEdit}" 
+                          Visibility="{Binding Auth.IsPassword, Converter={StaticResource BoolToVisibilityConverter}}" />
+
+               
+                <!-- NETWORK -->
+                <TextBlock Margin="0,20,0,8"
+                        FontSize="20"
+                        FontWeight="SemiBold"
+                        Text="Network"/>
+
+                <!-- NIC -->
+                <ComboBox
+                    ItemsSource="{Binding Network.BindAddresses}"
+                    SelectedItem="{Binding Network.SelectedBindAddress}"
+                    DisplayMemberPath="Display"
+                    IsEnabled="{Binding Instance.IsInstalled,
+                                        Converter={StaticResource InverseBoolConverter}}" />
+
+                <!-- PORT -->
+                <TextBlock Margin="0,16,0,4" Text="Port"/>
+                <mah:NumericUpDown
+                    Value="{Binding Network.Port}"
+                    Minimum="3000"
+                    Maximum="65535"
+                    Width="200"
+                    TextAlignment="Left"
+                    HorizontalAlignment="Left"
+                    IsEnabled="{Binding Instance.CanEdit}" />   
+                <!-- Storage -->
+                <mah:MetroHeader Margin="0,20,0,8">
+                    <mah:MetroHeader.Header>
+                        <TextBlock Text="Storage"
+                   FontSize="18"
+                   FontWeight="SemiBold"/>
+                    </mah:MetroHeader.Header>
+                </mah:MetroHeader>
+
+                <!-- CHECKPOINT DIRECTORY -->
+
+                <Grid Margin="0,0,0,8">
+
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="*"/>
+                        <ColumnDefinition Width="Auto"/>
+                    </Grid.ColumnDefinitions>
+
+                    <CheckBox Grid.Column="0"
+                          Content="Checkpoint Directory"
+                          IsEnabled="{Binding Instance.CanEdit}"
+                          IsChecked="{Binding CheckpointDirectory.Enabled}"/>
+
+                    <Button Grid.Column="1"
+                    Width="120"
+                    Margin="10,0,0,0"
+                    Content="Browse..."
+                    Command="{Binding BrowseCheckpointDirectoryCommand}"
+                    Visibility="{Binding CheckpointDirectory.Enabled, Converter={StaticResource BoolToVisibilityConverter}}"/>
+
+                </Grid>
+
+                <TextBox Margin="0,0,0,16"
+                     Text="{Binding CheckpointDirectory.Path}"
+                     IsEnabled="False"
+                     Visibility="{Binding CheckpointDirectory.Enabled, Converter={StaticResource BoolToVisibilityConverter}}"/>
+
+
+                <!-- LOG DIRECTORY -->
+
+                <Grid Margin="0,0,0,8">
+
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="*"/>
+                        <ColumnDefinition Width="Auto"/>
+                    </Grid.ColumnDefinitions>
+
+                    <CheckBox Grid.Column="0"
+                          Content="Log Directory"
+                          IsEnabled="{Binding Instance.CanEdit}"
+                          IsChecked="{Binding LogDirectory.Enabled}"/>
+
+                    <Button Grid.Column="1"
+                            Width="120"
+                            Margin="10,0,0,0"
+                            Content="Browse..."
+                            Command="{Binding BrowseLogDirectoryCommand}"
+                            Visibility="{Binding LogDirectory.Enabled, Converter={StaticResource BoolToVisibilityConverter}}"/>   
+
+                </Grid>
+
+                <TextBox Margin="0,0,0,0"
+                     Text="{Binding LogDirectory.Path}"
+                     IsEnabled="False"
+                     Visibility="{Binding LogDirectory.Enabled, Converter={StaticResource BoolToVisibilityConverter}}"/>
+
+
+
+                <!-- AUTO START -->
+                <mah:ToggleSwitch
+                    Margin="0,20,0,0"
+                    Header="Auto Start"
+                    IsEnabled="{Binding Instance.CanEdit}"
+                    IsOn="{Binding AutoStart}" />
+
+            </StackPanel>
+
+            <!-- FOOTER -->
+
+            <StackPanel Grid.Row="1"
+                     Orientation="Horizontal"
+                     HorizontalAlignment="Right"
+                     Margin="0,20,0,0">
+                <Button Content="Cancel"
+                     Margin="0,0,10,0"
+                    Width="120"
+                    IsDefault="{Binding Instance.CanDelete}"
+                    Command="{Binding CancelCommand}" CommandParameter="{Binding RelativeSource={RelativeSource AncestorType=Window}}" />
+                
+                <Button Content="Delete"
+                     Width="120"
+                     Margin="0,0,0,0"
+                     Command="{Binding DeleteCommand}"
+                     CommandParameter="{Binding RelativeSource={RelativeSource AncestorType=Window}}"
+                     Visibility="{Binding Instance.IsSaved, Converter={StaticResource BoolToVisibilityConverter}}"/>
+
+                <Button Content="Save"
+                      Width="120"
+                       Margin="10,0,0,0"
+                       IsDefault="{Binding Instance.CanEdit}"
+                      Command="{Binding SaveCommand}"
+                      CommandParameter="{Binding RelativeSource={RelativeSource AncestorType=Window}}"
+                      Visibility="{Binding Instance.CanEdit, Converter={StaticResource BoolToVisibilityConverter} }"  /> 
+            </StackPanel>
+
+        </Grid>
+
+    </ScrollViewer>
+</mah:MetroWindow>
