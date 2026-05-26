@@ -62,7 +62,8 @@ dotnet run
 
 ## Screenshots
 
-_Add screenshots here_
+<img width="1195" height="778" alt="garnet-desktop-screenshot" src="https://github.com/user-attachments/assets/ac4a98e1-0913-4db9-ab37-65c9c37533ba" />
+
 
 ## Roadmap
 
